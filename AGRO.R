@@ -89,6 +89,19 @@ proflor$Trimestre <- Recode(proflor$Mês,
 proflor = proflor %>% relocate(Trimestre, .after = Mês)  %>%
                       relocate(Valor, .after = last_col())
 
+# Criando o vetor de valors
 proflor_cr = proflor %>% group_by(Ano , Trimestre) %>% summarise(Valor = mean(Valor))
-valores_proflor = proflor
+valores_proflor = proflor_cr$Valor %>% as.matrix()
+
+# Criando o vetor de variações
+
+variacoes_proflor = matrix(NA, nrow = 1, ncol = 1)
+for (i in 2:length(valores_proflor)) {
+  variacoes_proflor[i] = valores_proflor[i] / valores_proflor[i-1]
+}
+# Deixando no formato matriz
+variacoes_proflor = as.matrix(variacoes_proflor , dim = c(1:length(variacoes_proflor) , 1))
+# Retirando os valores NA
+variacoes_proflor[is.na(variacoes_proflor)] = 0
+
 
